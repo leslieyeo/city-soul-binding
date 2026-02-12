@@ -19,7 +19,6 @@ import {
 } from './utils/calc';
 import { ELEMENT_META, getTopElements } from './utils/elements';
 import { STAGES, STORAGE_KEY } from './config/constants';
-import AuthView from './views/AuthView.vue';
 import ProfileView from './views/ProfileView.vue';
 import QuizView from './views/QuizView.vue';
 import ReportView from './views/ReportView.vue';
@@ -31,10 +30,7 @@ const orderedQuestions = chapters.flatMap((chapter) =>
 const TOTAL_QUESTIONS = orderedQuestions.length;
 
 // State
-const stage = ref(STAGES.AUTH);
-const authPassed = ref(false);
-const authorizedCode = ref('');
-const authCodeInput = ref('');
+const stage = ref(STAGES.PROFILE);
 
 const profile = reactive({
   name: '',
@@ -127,13 +123,6 @@ function firstUnansweredIndex() {
 }
 
 // Action Handlers
-function onAuthSuccess({ code, input }) {
-  authPassed.value = true;
-  authorizedCode.value = code;
-  authCodeInput.value = input;
-  stage.value = STAGES.PROFILE;
-}
-
 function onSubmitProfile() {
   if (answeredCount.value >= TOTAL_QUESTIONS && report.value) {
     stage.value = STAGES.REPORT;
@@ -243,10 +232,7 @@ function clearCalculationTimer() {
 // Persistence & Lifecycle
 function resetState() {
   clearCalculationTimer();
-  stage.value = STAGES.AUTH;
-  authCodeInput.value = '';
-  authPassed.value = false;
-  authorizedCode.value = '';
+  stage.value = STAGES.PROFILE;
 
   profile.name = '';
   profile.birthDate = '';
@@ -264,9 +250,6 @@ function persistProgress() {
   const payload = {
     version: 1,
     stage: stage.value === STAGES.CALCULATING ? STAGES.QUIZ : stage.value,
-    authPassed: authPassed.value,
-    authorizedCode: authorizedCode.value,
-    authCodeInput: authCodeInput.value,
     profile: { ...profile },
     answers: { ...answers },
     currentQuestionIndex: currentQuestionIndex.value,
@@ -281,10 +264,6 @@ function restoreProgress() {
 
   try {
     const saved = JSON.parse(raw);
-
-    authPassed.value = Boolean(saved.authPassed);
-    authorizedCode.value = saved.authorizedCode || '';
-    authCodeInput.value = saved.authCodeInput || saved.authorizedCode || '';
 
     profile.name = saved.profile?.name || '';
     profile.birthDate = saved.profile?.birthDate || '';
@@ -310,19 +289,17 @@ function restoreProgress() {
     }
 
     let nextStage = saved.stage;
-    const validStages = [STAGES.AUTH, STAGES.PROFILE, STAGES.QUIZ, STAGES.REPORT];
-    if (!validStages.includes(nextStage)) nextStage = STAGES.AUTH;
+    const validStages = [STAGES.PROFILE, STAGES.QUIZ, STAGES.REPORT];
+    if (!validStages.includes(nextStage)) nextStage = STAGES.PROFILE;
 
     const completedAll = answeredCount.value >= TOTAL_QUESTIONS;
-    if (!authPassed.value) {
-      nextStage = STAGES.AUTH;
-    } else if (profile.name.length === 0 || !profile.birthDate) {
+    if (profile.name.length === 0 || !profile.birthDate) {
       nextStage = STAGES.PROFILE;
     } else if (completedAll) {
-      if (!report.value) report.value = buildReportPayload();
+      const savedCreatedAt = report.value?.createdAt;
+      report.value = buildReportPayload() || report.value;
+      if (report.value && savedCreatedAt) report.value.createdAt = savedCreatedAt;
       nextStage = STAGES.REPORT;
-    } else if (nextStage === STAGES.AUTH) {
-      nextStage = STAGES.PROFILE;
     }
 
     if (nextStage === STAGES.QUIZ) {
@@ -339,9 +316,6 @@ function restoreProgress() {
 watch(
   () => ({
     stage: stage.value,
-    authPassed: authPassed.value,
-    authorizedCode: authorizedCode.value,
-    authCodeInput: authCodeInput.value,
     profile: { ...profile },
     answers: { ...answers },
     currentQuestionIndex: currentQuestionIndex.value,
@@ -374,14 +348,8 @@ onBeforeUnmount(() => {
 <template>
   <main class="min-h-screen">
     <div class="mx-auto w-full max-w-[390px] py-5">
-      <AuthView
-        v-if="stage === STAGES.AUTH"
-        :initial-code="authCodeInput"
-        @auth-success="onAuthSuccess"
-      />
-
       <ProfileView
-        v-else-if="stage === STAGES.PROFILE"
+        v-if="stage === STAGES.PROFILE"
         v-model:profile="profile"
         :preview="profilePreview"
         @submit="onSubmitProfile"

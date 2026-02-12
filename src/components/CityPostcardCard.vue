@@ -29,10 +29,18 @@ const dayElementCn = computed(() => {
   <article class="w-[350px] overflow-hidden border border-smoke bg-charcoal">
     <!-- City Image Area -->
     <div
-      class="relative h-[220px] flex flex-col justify-end p-5"
+      class="relative h-[220px] flex flex-col justify-end p-5 overflow-hidden"
       :style="{ background: city.background }"
     >
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      <img
+        v-if="city.landmark"
+        :src="city.landmark"
+        :alt="city.name"
+        class="absolute inset-0 h-full w-full object-cover"
+        crossorigin="anonymous"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
       <div class="relative">
         <h2 class="font-title text-[48px] font-semibold leading-none text-paper">{{ city.name }}</h2>
         <p class="mt-1 text-sm text-white/80 font-sans">{{ city.soulCopy }}</p>

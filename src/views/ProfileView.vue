@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
-import { HOUR_OPTIONS } from '../utils/astrology';
+import HourPicker from '../components/HourPicker.vue';
+import DatePicker from '../components/DatePicker.vue';
 
 const props = defineProps({
   profile: { type: Object, required: true },
@@ -65,14 +66,7 @@ function handleSubmit() {
         <!-- Birth Date -->
         <div class="space-y-1.5">
           <label class="text-xs font-medium text-pearl font-sans">出生日期 *</label>
-          <div class="relative flex h-12 items-center bg-charcoal px-3.5">
-            <input
-              v-model="form.birthDate"
-              type="date"
-              max="2026-12-31"
-              class="w-full bg-transparent text-sm text-paper outline-none font-sans [color-scheme:dark]"
-            />
-          </div>
+          <DatePicker v-model="form.birthDate" />
         </div>
 
         <!-- Optional divider -->
@@ -86,16 +80,7 @@ function handleSubmit() {
         <div class="flex gap-3">
           <div class="flex-1 space-y-1.5">
             <label class="text-xs font-medium text-pearl font-sans">出生时辰（可选）</label>
-            <div class="flex h-12 items-center bg-charcoal px-3.5">
-              <select
-                v-model="form.hourBranch"
-                class="w-full bg-transparent text-sm text-paper outline-none font-sans [color-scheme:dark]"
-              >
-                <option v-for="item in HOUR_OPTIONS" :key="item.value" :value="item.value" class="bg-charcoal text-paper">
-                  {{ item.label }}
-                </option>
-              </select>
-            </div>
+            <HourPicker v-model="form.hourBranch" />
           </div>
           <div class="flex-1 space-y-1.5">
             <label class="text-xs font-medium text-pearl font-sans">性别（可选）</label>

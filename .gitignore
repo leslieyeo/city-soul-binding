@@ -5,3 +5,11 @@ dist
 codes.csv
 .env
 .vercel
+.playwright-mcp
+
+# 小红书笔记素材 & 宣传视频
+/marketing/
+/xhs-assets/
+/promo/
+*.mp4
+*.mov

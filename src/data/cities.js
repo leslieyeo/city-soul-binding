@@ -13,7 +13,9 @@ export const cities = [
     blessing: '你会在慢节奏里，长出最稳定的热情。',
     postcardTag: '蜀地烟火',
     background:
-      'linear-gradient(140deg, rgba(255,138,79,0.86), rgba(254,199,84,0.76), rgba(71,32,8,0.7))'
+      'linear-gradient(140deg, rgba(255,138,79,0.86), rgba(254,199,84,0.76), rgba(71,32,8,0.7))',
+    landmark:
+      'https://images.unsplash.com/photo-1651405336230-3ee1d4b2a548?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'hangzhou',
@@ -29,7 +31,9 @@ export const cities = [
     blessing: '你会把平凡一天，过成值得收藏的章节。',
     postcardTag: '江南水木',
     background:
-      'linear-gradient(140deg, rgba(93,164,122,0.9), rgba(120,181,154,0.78), rgba(28,52,44,0.72))'
+      'linear-gradient(140deg, rgba(93,164,122,0.9), rgba(120,181,154,0.78), rgba(28,52,44,0.72))',
+    landmark:
+      'https://images.unsplash.com/photo-1675764031141-80368d518cc4?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'dali',
@@ -45,7 +49,9 @@ export const cities = [
     blessing: '你会在每一次出发里，重新找到自己。',
     postcardTag: '风与远方',
     background:
-      'linear-gradient(140deg, rgba(89,169,199,0.9), rgba(126,204,210,0.8), rgba(24,60,78,0.76))'
+      'linear-gradient(140deg, rgba(89,169,199,0.9), rgba(126,204,210,0.8), rgba(24,60,78,0.76))',
+    landmark:
+      'https://images.unsplash.com/photo-1657036769115-4ec84fbe6a60?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'beijing',
@@ -61,7 +67,9 @@ export const cities = [
     blessing: '你的坚持终会被时间放大成分量。',
     postcardTag: '城阙气象',
     background:
-      'linear-gradient(140deg, rgba(196,74,59,0.9), rgba(214,130,86,0.76), rgba(52,21,17,0.76))'
+      'linear-gradient(140deg, rgba(196,74,59,0.9), rgba(214,130,86,0.76), rgba(52,21,17,0.76))',
+    landmark:
+      'https://images.unsplash.com/photo-1729284439997-690df5c178a0?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'shanghai',
@@ -77,7 +85,9 @@ export const cities = [
     blessing: '你会在秩序里开出自己的锋芒。',
     postcardTag: '海派锋感',
     background:
-      'linear-gradient(140deg, rgba(95,106,126,0.92), rgba(143,151,171,0.8), rgba(20,26,39,0.82))'
+      'linear-gradient(140deg, rgba(95,106,126,0.92), rgba(143,151,171,0.8), rgba(20,26,39,0.82))',
+    landmark:
+      'https://images.unsplash.com/photo-1627481240536-b924cfe4605a?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'chongqing',
@@ -93,7 +103,9 @@ export const cities = [
     blessing: '你会把热烈，活成自己的护城河。',
     postcardTag: '山城热浪',
     background:
-      'linear-gradient(140deg, rgba(216,78,58,0.9), rgba(246,140,79,0.78), rgba(58,17,14,0.8))'
+      'linear-gradient(140deg, rgba(216,78,58,0.9), rgba(246,140,79,0.78), rgba(58,17,14,0.8))',
+    landmark:
+      'https://images.unsplash.com/photo-1677736316229-541f28f40079?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'xian',
@@ -109,7 +121,9 @@ export const cities = [
     blessing: '你会在沉淀中，长成真正的底气。',
     postcardTag: '长安余温',
     background:
-      'linear-gradient(140deg, rgba(193,139,67,0.92), rgba(216,170,98,0.82), rgba(60,38,15,0.8))'
+      'linear-gradient(140deg, rgba(193,139,67,0.92), rgba(216,170,98,0.82), rgba(60,38,15,0.8))',
+    landmark:
+      'https://images.unsplash.com/photo-1716146692716-8483119c93f6?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'changsha',
@@ -125,7 +139,9 @@ export const cities = [
     blessing: '你会在欢笑和奔跑里，找到归属。',
     postcardTag: '不夜热场',
     background:
-      'linear-gradient(140deg, rgba(230,108,138,0.9), rgba(255,153,124,0.76), rgba(62,24,42,0.78))'
+      'linear-gradient(140deg, rgba(230,108,138,0.9), rgba(255,153,124,0.76), rgba(62,24,42,0.78))',
+    landmark:
+      'https://images.unsplash.com/photo-1655213353803-520e7863a4fe?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'xiamen',
@@ -141,7 +157,9 @@ export const cities = [
     blessing: '你会在温柔里，活出坚定。',
     postcardTag: '海岛慢调',
     background:
-      'linear-gradient(140deg, rgba(76,154,216,0.92), rgba(117,191,233,0.8), rgba(20,48,78,0.78))'
+      'linear-gradient(140deg, rgba(76,154,216,0.92), rgba(117,191,233,0.8), rgba(20,48,78,0.78))',
+    landmark:
+      'https://images.unsplash.com/photo-1734333107769-49a375805803?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'qingdao',
@@ -157,7 +175,9 @@ export const cities = [
     blessing: '你会在清爽的风里，重新对生活上瘾。',
     postcardTag: '海风复位',
     background:
-      'linear-gradient(140deg, rgba(75,134,191,0.92), rgba(96,174,214,0.8), rgba(19,43,78,0.8))'
+      'linear-gradient(140deg, rgba(75,134,191,0.92), rgba(96,174,214,0.8), rgba(19,43,78,0.8))',
+    landmark:
+      'https://images.unsplash.com/photo-1647567377728-d85def968849?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'suzhou',
@@ -173,7 +193,9 @@ export const cities = [
     blessing: '你会在静水深流里，完成升级。',
     postcardTag: '园林心法',
     background:
-      'linear-gradient(140deg, rgba(110,143,163,0.92), rgba(140,174,188,0.8), rgba(29,48,62,0.78))'
+      'linear-gradient(140deg, rgba(110,143,163,0.92), rgba(140,174,188,0.8), rgba(29,48,62,0.78))',
+    landmark:
+      'https://images.unsplash.com/photo-1647594701022-e995313b6fe4?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'wuhan',
@@ -189,7 +211,9 @@ export const cities = [
     blessing: '你会在热烈与沉静之间找到平衡点。',
     postcardTag: '江城温差',
     background:
-      'linear-gradient(140deg, rgba(217,140,163,0.9), rgba(247,177,165,0.78), rgba(63,31,45,0.78))'
+      'linear-gradient(140deg, rgba(217,140,163,0.9), rgba(247,177,165,0.78), rgba(63,31,45,0.78))',
+    landmark:
+      'https://images.unsplash.com/photo-1663546920796-f6e430be5b84?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'guangzhou',
@@ -205,7 +229,9 @@ export const cities = [
     blessing: '你会在烟火里，活出丰盛和从容。',
     postcardTag: '岭南烟火',
     background:
-      'linear-gradient(140deg, rgba(224,175,88,0.92), rgba(245,210,128,0.8), rgba(63,45,18,0.82))'
+      'linear-gradient(140deg, rgba(224,175,88,0.92), rgba(245,210,128,0.8), rgba(63,45,18,0.82))',
+    landmark:
+      'https://images.unsplash.com/photo-1585669666867-f4eee227eb04?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'shenzhen',
@@ -221,7 +247,9 @@ export const cities = [
     blessing: '你会在持续迭代里，跑出自己的版本。',
     postcardTag: '未来加速',
     background:
-      'linear-gradient(140deg, rgba(78,137,217,0.94), rgba(83,188,214,0.8), rgba(17,36,72,0.82))'
+      'linear-gradient(140deg, rgba(78,137,217,0.94), rgba(83,188,214,0.8), rgba(17,36,72,0.82))',
+    landmark:
+      'https://images.unsplash.com/photo-1724242888263-582c27f615d3?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'nanjing',
@@ -237,7 +265,9 @@ export const cities = [
     blessing: '你会在克制里，显出真正的力量。',
     postcardTag: '秋色定力',
     background:
-      'linear-gradient(140deg, rgba(112,142,90,0.92), rgba(164,171,115,0.82), rgba(33,46,24,0.78))'
+      'linear-gradient(140deg, rgba(112,142,90,0.92), rgba(164,171,115,0.82), rgba(33,46,24,0.78))',
+    landmark:
+      'https://images.unsplash.com/photo-1674207219156-d400b15943ff?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'lhasa',
@@ -253,7 +283,9 @@ export const cities = [
     blessing: '你会在高处，看见更辽阔的自己。',
     postcardTag: '高原回响',
     background:
-      'linear-gradient(140deg, rgba(141,106,197,0.9), rgba(117,174,223,0.78), rgba(28,29,74,0.82))'
+      'linear-gradient(140deg, rgba(141,106,197,0.9), rgba(117,174,223,0.78), rgba(28,29,74,0.82))',
+    landmark:
+      'https://images.unsplash.com/photo-1626359909709-8067b64e1655?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'harbin',
@@ -269,7 +301,9 @@ export const cities = [
     blessing: '你会在寒冷里，保存最炽热的心。',
     postcardTag: '极地热心',
     background:
-      'linear-gradient(140deg, rgba(168,198,216,0.94), rgba(203,229,238,0.84), rgba(32,50,72,0.8))'
+      'linear-gradient(140deg, rgba(168,198,216,0.94), rgba(203,229,238,0.84), rgba(32,50,72,0.8))',
+    landmark:
+      'https://images.unsplash.com/photo-1739780700355-bba2b0bbe89a?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'jingdezhen',
@@ -285,7 +319,9 @@ export const cities = [
     blessing: '你会在耐心里，烧出独一无二的光泽。',
     postcardTag: '匠心温度',
     background:
-      'linear-gradient(140deg, rgba(122,166,164,0.94), rgba(168,205,189,0.82), rgba(31,56,58,0.78))'
+      'linear-gradient(140deg, rgba(122,166,164,0.94), rgba(168,205,189,0.82), rgba(31,56,58,0.78))',
+    landmark:
+      'https://images.unsplash.com/photo-1582254954751-3269385344ac?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'quanzhou',
@@ -301,7 +337,9 @@ export const cities = [
     blessing: '你会在低调里，走出被看见的路。',
     postcardTag: '海丝余韵',
     background:
-      'linear-gradient(140deg, rgba(186,93,78,0.92), rgba(219,141,108,0.8), rgba(60,26,22,0.82))'
+      'linear-gradient(140deg, rgba(186,93,78,0.92), rgba(219,141,108,0.8), rgba(60,26,22,0.82))',
+    landmark:
+      'https://images.unsplash.com/photo-1719919570408-365e3027e503?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   },
   {
     id: 'yanbian',
@@ -317,7 +355,9 @@ export const cities = [
     blessing: '你会在熟悉的温度里，找到长久归属。',
     postcardTag: '边地晨光',
     background:
-      'linear-gradient(140deg, rgba(199,169,107,0.92), rgba(158,194,132,0.78), rgba(53,46,24,0.8))'
+      'linear-gradient(140deg, rgba(199,169,107,0.92), rgba(158,194,132,0.78), rgba(53,46,24,0.8))',
+    landmark:
+      'https://images.unsplash.com/photo-1746335597564-b2c810f83d60?ixlib=rb-4.1.0&w=800&h=500&fit=crop&q=80'
   }
 ];
 
