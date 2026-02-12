@@ -18,24 +18,23 @@ import {
   matchCities
 } from './utils/calc';
 import { ELEMENT_META, getTopElements } from './utils/elements';
-
-import { STAGES, STORAGE_KEY, STAGE_LABELS } from './config/constants';
+import { STAGES, STORAGE_KEY } from './config/constants';
 import AuthView from './views/AuthView.vue';
 import ProfileView from './views/ProfileView.vue';
 import QuizView from './views/QuizView.vue';
-import TransitionView from './views/TransitionView.vue';
 import ReportView from './views/ReportView.vue';
 
 const questionLookup = new Map(questions.map((item) => [item.id, item]));
-const orderedQuestions = chapters
-  .flatMap((chapter) => chapter.questionIds.map((id) => questionLookup.get(id)).filter(Boolean));
+const orderedQuestions = chapters.flatMap((chapter) =>
+  chapter.questionIds.map((id) => questionLookup.get(id)).filter(Boolean)
+);
 const TOTAL_QUESTIONS = orderedQuestions.length;
 
-// --- State ---
+// State
 const stage = ref(STAGES.AUTH);
 const authPassed = ref(false);
 const authorizedCode = ref('');
-const authCodeInput = ref(''); // Keep track for persistence persistence restoring
+const authCodeInput = ref('');
 
 const profile = reactive({
   name: '',
@@ -46,7 +45,6 @@ const profile = reactive({
 
 const answers = reactive({});
 const currentQuestionIndex = ref(0);
-const transitionChapterId = ref(null);
 
 const calculationPhases = ref([
   '解析五行天干地支...',
@@ -61,7 +59,7 @@ let calculationTimer = null;
 const report = ref(null);
 const hydrated = ref(false);
 
-// --- Computed ---
+// Computed
 const currentQuestion = computed(() => orderedQuestions[currentQuestionIndex.value] || null);
 const currentChapter = computed(() =>
   chapters.find((chapter) => chapter.id === currentQuestion.value?.chapter) || null
@@ -105,13 +103,7 @@ const profilePreview = computed(() => {
   };
 });
 
-const transitionChapter = computed(() =>
-  chapters.find((chapter) => chapter.id === transitionChapterId.value) || null
-);
-
-const stageLabel = computed(() => STAGE_LABELS[stage.value] || '城市灵魂绑定');
-
-// --- Helper Functions ---
+// Helper Functions
 function parseBirthDate(value) {
   if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const [year, month, day] = value.split('-').map(Number);
@@ -121,7 +113,8 @@ function parseBirthDate(value) {
     candidate.getUTCFullYear() !== year ||
     candidate.getUTCMonth() !== month - 1 ||
     candidate.getUTCDate() !== day
-  ) return null;
+  )
+    return null;
   return { year, month, day };
 }
 
@@ -133,8 +126,7 @@ function firstUnansweredIndex() {
   return index === -1 ? TOTAL_QUESTIONS - 1 : index;
 }
 
-// --- Action Handlers ---
-
+// Action Handlers
 function onAuthSuccess({ code, input }) {
   authPassed.value = true;
   authorizedCode.value = code;
@@ -143,14 +135,12 @@ function onAuthSuccess({ code, input }) {
 }
 
 function onSubmitProfile() {
-  stage.value = STAGES.QUIZ;
-  transitionChapterId.value = null;
-
   if (answeredCount.value >= TOTAL_QUESTIONS && report.value) {
     stage.value = STAGES.REPORT;
     return;
   }
   currentQuestionIndex.value = firstUnansweredIndex();
+  stage.value = STAGES.QUIZ;
 }
 
 function onSelectAnswer(optionIndex) {
@@ -160,8 +150,6 @@ function onSelectAnswer(optionIndex) {
 
 function onPreviousQuestion() {
   if (currentQuestionIndex.value <= 0) return;
-  stage.value = STAGES.QUIZ;
-  transitionChapterId.value = null;
   currentQuestionIndex.value -= 1;
 }
 
@@ -170,29 +158,10 @@ function onNextQuestion() {
     startCalculationFlow();
     return;
   }
-
-  const previousChapter = currentQuestion.value.chapter;
-  const nextIndex = currentQuestionIndex.value + 1;
-  const nextQuestion = orderedQuestions[nextIndex];
-
-  currentQuestionIndex.value = nextIndex;
-
-  if (nextQuestion?.chapter !== previousChapter) {
-    transitionChapterId.value = previousChapter;
-    stage.value = STAGES.TRANSITION;
-    return;
-  }
-
-  stage.value = STAGES.QUIZ;
+  currentQuestionIndex.value += 1;
 }
 
-function onContinueTransition() {
-  stage.value = STAGES.QUIZ;
-  transitionChapterId.value = null;
-}
-
-// --- Calculation Logic ---
-
+// Calculation Logic
 function buildReportPayload() {
   const birth = parseBirthDate(profile.birthDate);
   if (!birth) return null;
@@ -249,10 +218,8 @@ function startCalculationFlow() {
 
   report.value = payload;
   stage.value = STAGES.CALCULATING;
-  transitionChapterId.value = null;
   calculationPhaseIndex.value = 0;
-  
-  // Update last phase with dynamic city name
+
   calculationPhases.value[calculationPhases.value.length - 1] = `锁定！你的灵魂之城：${payload.mainCity.name}`;
 
   clearCalculationTimer();
@@ -263,7 +230,7 @@ function startCalculationFlow() {
       return;
     }
     calculationPhaseIndex.value += 1;
-  }, 1200);
+  }, 800);
 }
 
 function clearCalculationTimer() {
@@ -273,15 +240,14 @@ function clearCalculationTimer() {
   }
 }
 
-// --- Persistence & Lifecycle ---
-
+// Persistence & Lifecycle
 function resetState() {
   clearCalculationTimer();
   stage.value = STAGES.AUTH;
   authCodeInput.value = '';
   authPassed.value = false;
   authorizedCode.value = '';
-  
+
   profile.name = '';
   profile.birthDate = '';
   profile.hourBranch = 'unknown';
@@ -289,7 +255,6 @@ function resetState() {
 
   Object.keys(answers).forEach((key) => delete answers[key]);
   currentQuestionIndex.value = 0;
-  transitionChapterId.value = null;
   report.value = null;
 
   localStorage.removeItem(STORAGE_KEY);
@@ -305,7 +270,6 @@ function persistProgress() {
     profile: { ...profile },
     answers: { ...answers },
     currentQuestionIndex: currentQuestionIndex.value,
-    transitionChapterId: transitionChapterId.value,
     report: report.value
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -336,26 +300,24 @@ function restoreProgress() {
     }
 
     if (Number.isInteger(saved.currentQuestionIndex)) {
-      currentQuestionIndex.value = Math.min(Math.max(saved.currentQuestionIndex, 0), TOTAL_QUESTIONS - 1);
-    }
-    if (Number.isInteger(saved.transitionChapterId)) {
-      transitionChapterId.value = saved.transitionChapterId;
+      currentQuestionIndex.value = Math.min(
+        Math.max(saved.currentQuestionIndex, 0),
+        TOTAL_QUESTIONS - 1
+      );
     }
     if (saved.report && saved.report.mainCity) {
       report.value = saved.report;
     }
 
-    // Determine Stage
     let nextStage = saved.stage;
-    const validStages = [STAGES.AUTH, STAGES.PROFILE, STAGES.QUIZ, STAGES.TRANSITION, STAGES.REPORT];
+    const validStages = [STAGES.AUTH, STAGES.PROFILE, STAGES.QUIZ, STAGES.REPORT];
     if (!validStages.includes(nextStage)) nextStage = STAGES.AUTH;
 
     const completedAll = answeredCount.value >= TOTAL_QUESTIONS;
     if (!authPassed.value) {
       nextStage = STAGES.AUTH;
-    } else if (!canStartQuiz.value) { 
-      // Reuse logic from ProfileView but check data directly
-      if(profile.name.length === 0 || !profile.birthDate) nextStage = STAGES.PROFILE;
+    } else if (profile.name.length === 0 || !profile.birthDate) {
+      nextStage = STAGES.PROFILE;
     } else if (completedAll) {
       if (!report.value) report.value = buildReportPayload();
       nextStage = STAGES.REPORT;
@@ -363,9 +325,6 @@ function restoreProgress() {
       nextStage = STAGES.PROFILE;
     }
 
-    if (nextStage === STAGES.TRANSITION && !transitionChapterId.value) {
-      nextStage = STAGES.QUIZ;
-    }
     if (nextStage === STAGES.QUIZ) {
       const maxSafeIndex = firstUnansweredIndex();
       currentQuestionIndex.value = Math.min(currentQuestionIndex.value, maxSafeIndex);
@@ -377,12 +336,6 @@ function restoreProgress() {
   }
 }
 
-// CanStartQuiz check for restore logic redundancy
-const canStartQuiz = computed(() => {
-   return profile.name.trim().length > 0 && Boolean(parseBirthDate(profile.birthDate));
-});
-
-
 watch(
   () => ({
     stage: stage.value,
@@ -392,7 +345,6 @@ watch(
     profile: { ...profile },
     answers: { ...answers },
     currentQuestionIndex: currentQuestionIndex.value,
-    transitionChapterId: transitionChapterId.value,
     report: report.value
   }),
   () => {
@@ -420,41 +372,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="min-h-screen px-4 py-5 sm:px-6 sm:py-8">
-    <div class="mx-auto w-full max-w-4xl">
-      <header class="mb-5 rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-card sm:mb-7">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.26em] text-mist/70">City Soul Binding</p>
-            <h1 class="mt-2 font-title text-3xl text-paper sm:text-4xl">城市灵魂绑定</h1>
-            <p class="mt-2 text-sm text-mist">五行 × 星座 × 个性测试报告</p>
-          </div>
-          <span class="rounded-full border border-amber/35 bg-amber/10 px-3 py-1 text-xs text-amber">
-            {{ stageLabel }}
-          </span>
-        </div>
-      </header>
-
-      <!-- Stage Views -->
-      <AuthView 
-        v-if="stage === STAGES.AUTH" 
-        :initial-code="authCodeInput" 
-        @auth-success="onAuthSuccess" 
+  <main class="min-h-screen">
+    <div class="mx-auto w-full max-w-[390px] py-5">
+      <AuthView
+        v-if="stage === STAGES.AUTH"
+        :initial-code="authCodeInput"
+        @auth-success="onAuthSuccess"
       />
 
-      <ProfileView 
-        v-else-if="stage === STAGES.PROFILE" 
-        v-model:profile="profile" 
-        :preview="profilePreview" 
-        @submit="onSubmitProfile" 
-      />
-
-      <TransitionView
-        v-else-if="stage === STAGES.TRANSITION"
-        :chapter="transitionChapter"
-        :answered-count="answeredCount"
-        :total-questions="TOTAL_QUESTIONS"
-        @continue="onContinueTransition"
+      <ProfileView
+        v-else-if="stage === STAGES.PROFILE"
+        v-model:profile="profile"
+        :preview="profilePreview"
+        @submit="onSubmitProfile"
       />
 
       <QuizView
@@ -473,38 +403,50 @@ onBeforeUnmount(() => {
         @next="onNextQuestion"
       />
 
+      <!-- Calculating (inline) -->
       <div
         v-else-if="stage === STAGES.CALCULATING"
-        class="rounded-3xl border border-white/15 bg-white/[0.04] p-6 text-center shadow-card sm:p-8"
+        class="flex min-h-[80vh] items-center justify-center px-5 py-10"
       >
-        <p class="text-xs uppercase tracking-[0.26em] text-amber/85">Soul Engine</p>
-        <h2 class="mt-3 font-title text-3xl text-paper">正在生成你的城市灵魂报告</h2>
+        <div class="w-full space-y-6 text-center">
+          <p class="text-[10px] uppercase tracking-[4px] text-gold/50 font-sans">SOUL ENGINE</p>
+          <h2 class="font-title text-[28px] font-semibold leading-[1.3] text-paper">
+            正在生成你的<br />城市灵魂报告
+          </h2>
 
-        <div class="relative mx-auto mt-8 h-36 w-36">
-          <span class="absolute inset-0 rounded-full border border-amber/40 animate-runeSpin" />
-          <span class="absolute inset-4 rounded-full border border-jade/45 animate-runeSpin [animation-direction:reverse]" />
-          <span class="absolute inset-0 m-auto h-5 w-5 rounded-full bg-amber animate-shine" />
+          <!-- Orb animation -->
+          <div class="relative mx-auto h-[120px] w-[120px]">
+            <div class="absolute inset-0 rounded-full border border-gold/25 animate-runeSpin"></div>
+            <div class="absolute inset-4 rounded-full border border-jade/25 animate-runeSpin [animation-direction:reverse]"></div>
+            <div class="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold animate-shine"></div>
+          </div>
+
+          <!-- Phases -->
+          <div class="mx-auto w-full max-w-sm space-y-2">
+            <div
+              v-for="(item, idx) in calculationPhases"
+              :key="item"
+              class="flex items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] transition font-sans"
+              :class="
+                idx === calculationPhaseIndex
+                  ? 'border border-gold/50 bg-gold/[0.08] text-paper'
+                  : idx < calculationPhaseIndex
+                  ? 'border border-jade/40 bg-jade/[0.09] text-pearl'
+                  : 'border border-transparent text-fog'
+              "
+            >
+              <span class="flex w-4 items-center justify-center text-xs">
+                <template v-if="idx < calculationPhaseIndex">
+                  <span class="text-jade">✓</span>
+                </template>
+                <template v-else-if="idx === calculationPhaseIndex">
+                  <span class="text-gold">➤</span>
+                </template>
+              </span>
+              <span>{{ item }}</span>
+            </div>
+          </div>
         </div>
-
-        <ul class="mx-auto mt-8 max-w-md space-y-2 text-left">
-          <li
-            v-for="(item, idx) in calculationPhases"
-            :key="item"
-            class="rounded-xl border px-3 py-2 text-sm transition"
-            :class="
-              idx === calculationPhaseIndex
-                ? 'border-amber/70 bg-amber/15 text-paper'
-                : idx < calculationPhaseIndex
-                ? 'border-jade/30 bg-jade/10 text-mist'
-                : 'border-transparent text-mist/30'
-            "
-          >
-            <span class="mr-2 inline-block w-4 text-center">
-              {{ idx < calculationPhaseIndex ? '✓' : idx === calculationPhaseIndex ? '➤' : '' }}
-            </span>
-            {{ item }}
-          </li>
-        </ul>
       </div>
 
       <ReportView

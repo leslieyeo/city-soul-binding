@@ -2,45 +2,20 @@
 import { computed, ref } from 'vue';
 
 const props = defineProps({
-  currentQuestion: {
-    type: Object,
-    required: true
-  },
-  currentChapter: {
-    type: Object,
-    required: true
-  },
-  chapterProgress: {
-    type: Number,
-    required: true
-  },
-  overallProgress: {
-    type: Number,
-    required: true
-  },
-  answeredCount: {
-    type: Number,
-    required: true
-  },
-  totalQuestions: {
-    type: Number,
-    required: true
-  },
-  answers: {
-    type: Object,
-    required: true
-  },
-  questionIndex: {
-    type: Number,
-    required: true
-  },
-  isFinalQuestion: {
-    type: Boolean,
-    default: false
-  }
+  currentQuestion: { type: Object, required: true },
+  currentChapter: { type: Object, required: true },
+  chapterProgress: { type: Number, required: true },
+  overallProgress: { type: Number, required: true },
+  answeredCount: { type: Number, required: true },
+  totalQuestions: { type: Number, required: true },
+  answers: { type: Object, required: true },
+  questionIndex: { type: Number, required: true },
+  isFinalQuestion: { type: Boolean, default: false }
 });
 
 const emit = defineEmits(['select', 'previous', 'next']);
+
+const LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
 const currentSelectedIndex = computed(() => {
   if (!props.currentQuestion) return null;
@@ -50,90 +25,109 @@ const currentSelectedIndex = computed(() => {
 
 const canProceedNext = computed(() => currentSelectedIndex.value !== null);
 
-// Auto-advance logic
 const isAutoAdvancing = ref(false);
 
 function handleSelect(optionIndex) {
   emit('select', optionIndex);
-  
-  // Trigger auto-advance if it's not the final question
   if (!props.isFinalQuestion && !isAutoAdvancing.value) {
     isAutoAdvancing.value = true;
     setTimeout(() => {
       emit('next');
-      isAutoAdvancing.value = false; // Reset for next interaction
-    }, 380); // Small delay for visual feedback
+      isAutoAdvancing.value = false;
+    }, 200);
   }
-}
-
-// Manual navigation
-function handleNext() {
-  emit('next');
-}
-
-function handlePrevious() {
-  emit('previous');
 }
 </script>
 
 <template>
-  <section class="space-y-4">
-    <div class="card-paper rounded-3xl border border-white/10 p-4 shadow-card sm:p-6">
-      <div class="flex items-center justify-between text-xs text-[#58627a]">
-        <span>总进度 {{ answeredCount }}/{{ totalQuestions }}</span>
-        <span>{{ overallProgress }}%</span>
+  <div>
+    <!-- Progress Section -->
+    <div class="px-5 pt-5 pb-4 space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-silver font-sans">总进度 {{ answeredCount }}/{{ totalQuestions }}</span>
+        <span class="text-xs font-medium text-gold font-sans">{{ overallProgress }}%</span>
       </div>
-      <div class="mt-2 h-2 rounded-full bg-[#dae0ea]">
+      <div class="h-1 w-full overflow-hidden bg-smoke">
         <div
-          class="h-full rounded-full bg-gradient-to-r from-jade via-amber to-ember transition-all"
-          :style="{ width: `${overallProgress}%` }"
+          class="h-full transition-all duration-300"
+          :style="{
+            width: `${overallProgress}%`,
+            background: 'linear-gradient(90deg, #4A8B6E 0%, #C9A962 60%, #D4553A 100%)'
+          }"
         />
       </div>
     </div>
 
-    <div class="card-paper rounded-3xl border border-white/10 p-5 shadow-card sm:p-8">
-      <div class="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p class="text-xs uppercase tracking-[0.2em] text-[#64708a]">{{ currentChapter?.title }}</p>
-          <p class="mt-1 text-sm text-[#5b667f]">{{ currentChapter?.subtitle }}</p>
+    <!-- Chapter Info -->
+    <div class="px-5 pb-4">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <p class="text-[11px] font-medium tracking-[1px] text-gold/50 font-sans">{{ currentChapter?.title }}</p>
+          <p class="text-xs text-silver font-sans">{{ currentChapter?.subtitle }}</p>
         </div>
-        <span class="rounded-full border border-[#cfd6e1] bg-white px-3 py-1 text-xs text-[#46506a]">
-          当前篇章进度 {{ chapterProgress }}/{{ currentChapter?.questionIds.length }}
-        </span>
+        <div class="bg-ash px-2.5 py-1">
+          <span class="text-[11px] text-pearl font-sans">篇章 {{ chapterProgress }}/{{ currentChapter?.questionIds.length }}</span>
+        </div>
       </div>
+    </div>
 
-      <h2 class="mt-5 font-title text-2xl leading-tight text-[#1f2739] sm:text-3xl">{{ currentQuestion.title }}</h2>
+    <div class="h-px w-full bg-ash"></div>
 
-      <div class="mt-5 space-y-3">
+    <!-- Question Content -->
+    <div class="space-y-5 px-5 py-5">
+      <h2 class="font-title text-[22px] font-medium leading-[1.4] text-paper">
+        {{ currentQuestion.title }}
+      </h2>
+
+      <!-- Options -->
+      <div class="space-y-2.5">
         <button
           v-for="(option, optionIndex) in currentQuestion.options"
           :key="`${currentQuestion.id}-${option.label}`"
-          class="w-full rounded-2xl border px-4 py-3 text-left text-sm transition sm:text-[15px]"
+          class="flex w-full items-center gap-3 px-4 py-3.5 text-left text-sm transition"
           :class="
             currentSelectedIndex === optionIndex
-              ? 'border-[#274b87] bg-[#e8f0ff] text-[#1f3e72]'
-              : 'border-[#d4dbe6] bg-white/75 text-[#33405c] hover:border-[#a8b8d8]'
+              ? 'bg-gold/[0.09] border border-gold/[0.38]'
+              : 'bg-charcoal border border-transparent'
           "
           @click="handleSelect(optionIndex)"
         >
-          <span class="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full border border-current text-xs">
-            {{ option.label }}
+          <span
+            class="flex h-7 w-7 shrink-0 items-center justify-center text-xs font-medium transition"
+            :class="
+              currentSelectedIndex === optionIndex
+                ? 'bg-gold text-void font-semibold'
+                : 'border border-smoke text-pearl'
+            "
+          >
+            {{ LETTERS[optionIndex] }}
           </span>
-          {{ option.text }}
+          <span
+            class="flex-1 font-sans"
+            :class="currentSelectedIndex === optionIndex ? 'text-paper font-medium' : 'text-paper'"
+          >
+            {{ option.text }}
+          </span>
         </button>
       </div>
 
-      <div class="mt-6 flex items-center justify-between gap-3">
-        <button class="btn-ghost flex-1" :disabled="questionIndex === 0" @click="handlePrevious">
+      <!-- Navigation -->
+      <div class="flex items-center gap-3">
+        <button
+          class="flex h-12 flex-1 items-center justify-center border border-smoke text-sm text-pearl transition hover:border-pearl/30 disabled:opacity-30 disabled:cursor-not-allowed font-sans"
+          :disabled="questionIndex === 0"
+          @click="emit('previous')"
+        >
           上一题
         </button>
-        <!-- 'Next' button remains for manual navigation or changing answers, 
-             but auto-advance handles main flow.
-             Final question requires explicit click to generate report. -->
-        <button class="btn-primary flex-1" :disabled="!canProceedNext" @click="handleNext">
+        <button
+          class="flex h-12 flex-1 items-center justify-center bg-gold text-sm font-semibold text-void transition hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed font-sans"
+          :disabled="!canProceedNext"
+          @click="emit('next')"
+        >
           {{ isFinalQuestion ? '生成报告' : '下一题' }}
         </button>
       </div>
     </div>
-  </section>
+  </div>
 </template>

@@ -3,23 +3,11 @@ import { computed } from 'vue';
 import { HOUR_OPTIONS } from '../utils/astrology';
 
 const props = defineProps({
-  profile: {
-    type: Object,
-    required: true
-  },
-  preview: {
-    type: Object,
-    default: null
-  }
+  profile: { type: Object, required: true },
+  preview: { type: Object, default: null }
 });
 
 const emit = defineEmits(['update:profile', 'submit']);
-
-// Use a local computed proxy for v-model binding if needed, 
-// or imply the parent state is reactive and passed down. 
-// Since we are mutating props.profile directly (which is reactive object from parent), 
-// Vue allows deep mutation of objects, but let's be careful. 
-// For better pattern, we emit changes, but straightforward binding is fine for this refactor level.
 
 const form = computed({
   get: () => props.profile,
@@ -27,67 +15,128 @@ const form = computed({
 });
 
 const canStartQuiz = computed(() => {
-  return form.value.name.trim().length > 0 && Boolean(parseBirthDate(form.value.birthDate));
+  return form.value.name.trim().length > 0 && form.value.birthDate !== '';
 });
 
-function parseBirthDate(value) {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return null;
-  }
-  const [year, month, day] = value.split('-').map((part) => Number(part));
-  if (!year || month < 1 || month > 12 || day < 1 || day > 31) {
-    return null;
-  }
-  return new Date(Date.UTC(year, month - 1, day));
-}
-
 function handleSubmit() {
-  if (canStartQuiz.value) {
-    emit('submit');
-  }
+  if (canStartQuiz.value) emit('submit');
 }
 </script>
 
 <template>
-  <section class="card-paper rounded-3xl border border-white/10 p-5 shadow-card sm:p-8">
-    <h2 class="font-title text-2xl text-ink">填写基础信息</h2>
-    <p class="mt-2 text-sm text-[#4c5670]">用于生成专属报告展示。姓名和生日为必填项。</p>
+  <div>
+    <!-- Header -->
+    <header class="px-5 pt-6 pb-0">
+      <div class="flex items-end justify-between gap-4">
+        <div class="space-y-1.5">
+          <p class="text-[10px] uppercase tracking-[3px] text-gold/50 font-sans">CITY SOUL BINDING</p>
+          <h1 class="font-title text-[28px] font-semibold text-paper">城市灵魂绑定</h1>
+          <p class="text-[13px] text-pearl font-sans">五行 × 星座 × 个性测试报告</p>
+        </div>
+        <div class="shrink-0 bg-gold/[0.13] px-3 py-1.5">
+          <span class="text-[11px] font-medium text-gold font-sans">基础信息</span>
+        </div>
+      </div>
+      <div class="mt-4 h-px w-full bg-smoke"></div>
+    </header>
 
-    <div class="mt-5 grid gap-4 sm:grid-cols-2">
-      <label class="space-y-2 text-sm text-[#3a445b]">
-        <span>姓名 *</span>
-        <input v-model.trim="form.name" type="text" class="input-shell bg-[#152141] text-paper" placeholder="例如：林夏" />
-      </label>
+    <!-- Profile Form -->
+    <div class="space-y-5 px-5 py-6">
+      <div>
+        <h2 class="font-title text-[22px] font-medium text-paper">填写基础信息</h2>
+        <p class="mt-1 text-[13px] text-silver font-sans">用于生成专属报告展示，姓名和生日为必填项</p>
+      </div>
 
-      <label class="space-y-2 text-sm text-[#3a445b]">
-        <span>出生日期 *</span>
-        <input v-model="form.birthDate" type="date" class="input-shell bg-[#152141] text-paper" />
-      </label>
+      <!-- Fields -->
+      <div class="space-y-4">
+        <!-- Name -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-pearl font-sans">姓名 *</label>
+          <div class="flex h-12 items-center bg-charcoal px-3.5">
+            <input
+              v-model.trim="form.name"
+              type="text"
+              class="w-full bg-transparent text-sm text-paper placeholder:text-fog outline-none font-sans"
+              placeholder="例如：林夏"
+            />
+          </div>
+        </div>
 
-      <label class="space-y-2 text-sm text-[#3a445b]">
-        <span>出生时辰（可选）</span>
-        <select v-model="form.hourBranch" class="input-shell bg-[#152141] text-paper">
-          <option v-for="item in HOUR_OPTIONS" :key="item.value" :value="item.value">{{ item.label }}</option>
-        </select>
-      </label>
+        <!-- Birth Date -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-pearl font-sans">出生日期 *</label>
+          <div class="relative flex h-12 items-center bg-charcoal px-3.5">
+            <input
+              v-model="form.birthDate"
+              type="date"
+              max="2026-12-31"
+              class="w-full bg-transparent text-sm text-paper outline-none font-sans [color-scheme:dark]"
+            />
+          </div>
+        </div>
 
-      <label class="space-y-2 text-sm text-[#3a445b]">
-        <span>性别（可选）</span>
-        <select v-model="form.gender" class="input-shell bg-[#152141] text-paper">
-          <option value="">不填写</option>
-          <option value="female">女</option>
-          <option value="male">男</option>
-        </select>
-      </label>
+        <!-- Optional divider -->
+        <div class="flex items-center gap-3 pt-1">
+          <div class="h-px flex-1 bg-ash"></div>
+          <span class="text-[11px] text-fog font-sans">可选信息</span>
+          <div class="h-px flex-1 bg-ash"></div>
+        </div>
+
+        <!-- Hour + Gender row -->
+        <div class="flex gap-3">
+          <div class="flex-1 space-y-1.5">
+            <label class="text-xs font-medium text-pearl font-sans">出生时辰（可选）</label>
+            <div class="flex h-12 items-center bg-charcoal px-3.5">
+              <select
+                v-model="form.hourBranch"
+                class="w-full bg-transparent text-sm text-paper outline-none font-sans [color-scheme:dark]"
+              >
+                <option v-for="item in HOUR_OPTIONS" :key="item.value" :value="item.value" class="bg-charcoal text-paper">
+                  {{ item.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="flex-1 space-y-1.5">
+            <label class="text-xs font-medium text-pearl font-sans">性别（可选）</label>
+            <div class="flex h-12 items-center bg-charcoal px-3.5">
+              <select
+                v-model="form.gender"
+                class="w-full bg-transparent text-sm text-paper outline-none font-sans [color-scheme:dark]"
+              >
+                <option value="" class="bg-charcoal text-paper">不填写</option>
+                <option value="female" class="bg-charcoal text-paper">女</option>
+                <option value="male" class="bg-charcoal text-paper">男</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div v-if="preview" class="bg-charcoal p-4 space-y-2">
+        <div class="flex items-center gap-2">
+          <svg class="h-4 w-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+          <span class="text-xs font-medium text-gold font-sans">命理速览</span>
+        </div>
+        <p class="text-[13px] leading-[1.6] text-paper font-sans">
+          你的星座是 {{ preview.constellation.name }}（{{ preview.constellation.astro }}），五行日柱为 {{ preview.bazi.dayPillar }}（{{ preview.dayElementCn }}）
+        </p>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        class="flex h-[52px] w-full items-center justify-center gap-2 bg-gold text-sm font-semibold text-void transition hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+        :disabled="!canStartQuiz"
+        @click="handleSubmit"
+      >
+        <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.41 14.59L6 12l1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z" />
+        </svg>
+        <span>进入 35 题测试</span>
+      </button>
     </div>
-
-    <div v-if="preview" class="mt-5 rounded-2xl border border-[#d5dae3] bg-white/70 p-4">
-      <p class="text-sm text-[#2d374d]">
-        你的星座是 <strong>{{ preview.constellation.name }}</strong>（{{ preview.constellation.astro }}），
-        五行日柱为 <strong>{{ preview.bazi.dayPillar }}</strong>（{{ preview.dayElementCn }}）。
-      </p>
-    </div>
-
-    <button class="btn-primary mt-5 w-full" :disabled="!canStartQuiz" @click="handleSubmit">进入 35 题测试</button>
-  </section>
+  </div>
 </template>

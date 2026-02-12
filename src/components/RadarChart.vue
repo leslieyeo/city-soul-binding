@@ -3,14 +3,8 @@ import { computed } from 'vue';
 import { ELEMENT_ORDER, ELEMENT_META } from '../utils/elements';
 
 const props = defineProps({
-  values: {
-    type: Object,
-    required: true
-  },
-  size: {
-    type: Number,
-    default: 320
-  }
+  values: { type: Object, required: true },
+  size: { type: Number, default: 320 }
 });
 
 const center = computed(() => props.size / 2);
@@ -36,12 +30,13 @@ const polygonPoints = computed(() => {
 
 const labelPoints = computed(() => {
   return ELEMENT_ORDER.map((key, index) => {
-    const point = pointAt(index, 1.15);
+    const point = pointAt(index, 1.2);
     return {
       key,
       x: point.x,
       y: point.y,
       name: ELEMENT_META[key].cn,
+      color: ELEMENT_META[key].color,
       value: Number((props.values[key] || 0).toFixed(1))
     };
   });
@@ -50,13 +45,7 @@ const labelPoints = computed(() => {
 const axisLines = computed(() =>
   ELEMENT_ORDER.map((key, index) => {
     const point = pointAt(index, 1);
-    return {
-      key,
-      x1: center.value,
-      y1: center.value,
-      x2: point.x,
-      y2: point.y
-    };
+    return { key, x1: center.value, y1: center.value, x2: point.x, y2: point.y };
   })
 );
 
@@ -72,12 +61,12 @@ const gridPolygons = computed(() =>
 
 <template>
   <div class="w-full">
-    <svg :width="size" :height="size" viewBox="0 0 320 320" class="mx-auto block w-full max-w-[360px]">
+    <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`" class="mx-auto block w-full max-w-[310px]">
       <defs>
-        <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#57B27D" stop-opacity="0.55" />
-          <stop offset="50%" stop-color="#FF7345" stop-opacity="0.46" />
-          <stop offset="100%" stop-color="#4F8CCF" stop-opacity="0.5" />
+        <linearGradient id="radarFillDark" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#4A8B6E" stop-opacity="0.4" />
+          <stop offset="50%" stop-color="#C9A962" stop-opacity="0.3" />
+          <stop offset="100%" stop-color="#5B8FCE" stop-opacity="0.35" />
         </linearGradient>
       </defs>
 
@@ -87,8 +76,7 @@ const gridPolygons = computed(() =>
           :key="`grid-${idx}`"
           :points="poly"
           fill="none"
-          stroke="#d0d5df"
-          :stroke-opacity="0.35 + idx * 0.1"
+          stroke="#2A2A2A"
           stroke-width="1"
         />
 
@@ -99,20 +87,25 @@ const gridPolygons = computed(() =>
           :y1="line.y1"
           :x2="line.x2"
           :y2="line.y2"
-          stroke="#c1c9d8"
-          stroke-opacity="0.4"
+          stroke="#2A2A2A"
           stroke-width="1"
         />
 
-        <polygon :points="polygonPoints" fill="url(#radarFill)" stroke="#3E4C68" stroke-width="2.5" />
+        <polygon
+          :points="polygonPoints"
+          fill="url(#radarFillDark)"
+          stroke="#C9A962"
+          stroke-opacity="0.3"
+          stroke-width="1.5"
+        />
 
         <circle
           v-for="(item, idx) in labelPoints"
           :key="`dot-${item.key}`"
           :cx="pointAt(idx, Math.max(0, Math.min(1, (values[item.key] || 0) / 100))).x"
           :cy="pointAt(idx, Math.max(0, Math.min(1, (values[item.key] || 0) / 100))).y"
-          r="4.2"
-          fill="#243451"
+          r="3"
+          :fill="item.color"
         />
 
         <g v-for="item in labelPoints" :key="`label-${item.key}`">
@@ -121,7 +114,9 @@ const gridPolygons = computed(() =>
             :y="item.y"
             text-anchor="middle"
             dominant-baseline="middle"
-            class="fill-[#37425D] text-[13px] font-semibold"
+            :fill="item.color"
+            class="text-[11px] font-medium"
+            font-family="Inter, sans-serif"
           >
             {{ item.name }} {{ item.value }}%
           </text>

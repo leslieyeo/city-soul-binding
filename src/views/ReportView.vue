@@ -1,22 +1,14 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import html2canvas from 'html2canvas';
-
 import CityPostcardCard from '../components/CityPostcardCard.vue';
 import FiveElementCard from '../components/FiveElementCard.vue';
 import CityReportCard from '../components/CityReportCard.vue';
 import CityTicketCard from '../components/CityTicketCard.vue';
-import { getConstellationVector } from '../utils/astrology';
 
 const props = defineProps({
-  report: {
-    type: Object,
-    required: true
-  },
-  profile: {
-    type: Object,
-    required: true
-  }
+  report: { type: Object, required: true },
+  profile: { type: Object, required: true }
 });
 
 const emit = defineEmits(['retest']);
@@ -33,9 +25,7 @@ const savingCard = ref('');
 
 function formatDate(dateInput) {
   const target = dateInput ? new Date(dateInput) : new Date();
-  if (Number.isNaN(target.getTime())) {
-    return '--.--.--';
-  }
+  if (Number.isNaN(target.getTime())) return '--.--.--';
   const year = target.getFullYear();
   const month = String(target.getMonth() + 1).padStart(2, '0');
   const day = String(target.getDate()).padStart(2, '0');
@@ -87,16 +77,14 @@ async function saveCardImage(cardKey) {
 
 function handleRetest() {
   const accepted = window.confirm('相同答案 = 相同结果哦，确认清空数据重新开始吗？');
-  if (accepted) {
-    emit('retest');
-  }
+  if (accepted) emit('retest');
 }
 </script>
 
 <template>
-  <div class="space-y-8 pb-10">
+  <div class="space-y-8 py-6">
     <!-- Card 1: City Postcard -->
-    <div class="relative mx-auto max-w-[360px]">
+    <div class="flex flex-col items-center gap-3">
       <div ref="postcardCardRef">
         <CityPostcardCard
           :city="report.mainCity"
@@ -104,80 +92,100 @@ function handleRetest() {
           :date="reportDate"
           :constellation="report.constellation"
           :bazi="report.bazi"
+          :primary-element="report.primaryElement"
+          :final-vector="report.finalVector"
         />
       </div>
       <button
-        class="btn-secondary mt-3 w-full"
+        class="flex h-11 w-[350px] items-center justify-center gap-2 border border-smoke text-[13px] font-medium text-pearl transition hover:border-pearl/40"
         :disabled="savingCard === 'postcard'"
         @click="saveCardImage('postcard')"
       >
-        {{ savingCard === 'postcard' ? '保存中...' : '保存明信片' }}
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+        <span>{{ savingCard === 'postcard' ? '保存中...' : '保存明信片' }}</span>
       </button>
     </div>
 
-    <!-- Card 2: Five Elements Radar -->
-    <div class="relative mx-auto max-w-[360px]">
+    <!-- Card 2: Five Elements -->
+    <div class="flex flex-col items-center gap-3">
       <div ref="fiveElementsCardRef">
         <FiveElementCard
           :report="report"
-          :vector-list="report.vectorList"
-          :resonance-text="report.resonanceText"
           :final-vector="report.finalVector"
-          :constellation-vector="report.constellationVector"
+          :primary-element="report.primaryElement"
+          :secondary-element="report.secondaryElement"
+          :constellation-bonus-text="report.constellationBonusText"
+          :keywords="report.keywords"
+          :resonance-text="report.resonanceText"
         />
       </div>
       <button
-        class="btn-secondary mt-3 w-full"
+        class="flex h-11 w-[350px] items-center justify-center gap-2 border border-smoke text-[13px] font-medium text-pearl transition hover:border-pearl/40"
         :disabled="savingCard === 'elements'"
         @click="saveCardImage('elements')"
       >
-        {{ savingCard === 'elements' ? '保存中...' : '保存五行图谱' }}
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+        <span>{{ savingCard === 'elements' ? '保存中...' : '保存五行图谱' }}</span>
       </button>
     </div>
 
-    <!-- Card 3: City Deep Report -->
-    <div class="relative mx-auto max-w-[360px]">
+    <!-- Card 3: City Report -->
+    <div class="flex flex-col items-center gap-3">
       <div ref="cityReportCardRef">
         <CityReportCard
           :city="report.mainCity"
           :hidden-city="report.hiddenCity"
+          :primary-element="report.primaryElement"
           :user-name="profile.name"
         />
       </div>
       <button
-        class="btn-secondary mt-3 w-full"
+        class="flex h-11 w-[350px] items-center justify-center gap-2 border border-smoke text-[13px] font-medium text-pearl transition hover:border-pearl/40"
         :disabled="savingCard === 'report'"
         @click="saveCardImage('report')"
       >
-        {{ savingCard === 'report' ? '保存中...' : '保存城市报告' }}
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+        <span>{{ savingCard === 'report' ? '保存中...' : '保存城市报告' }}</span>
       </button>
     </div>
 
     <!-- Card 4: Ticket -->
-    <div class="relative mx-auto max-w-[360px]">
+    <div class="flex flex-col items-center gap-3">
       <div ref="ticketCardRef">
         <CityTicketCard
           :city="report.mainCity"
           :user-name="profile.name"
           :date="reportDate"
-          :element-cn="report.primaryElement ? report.primaryElement.cn : ''"
+          :primary-element="report.primaryElement"
         />
       </div>
       <button
-        class="btn-secondary mt-3 w-full"
+        class="flex h-11 w-[350px] items-center justify-center gap-2 border border-smoke text-[13px] font-medium text-pearl transition hover:border-pearl/40"
         :disabled="savingCard === 'ticket'"
         @click="saveCardImage('ticket')"
       >
-        {{ savingCard === 'ticket' ? '保存中...' : '保存车票' }}
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+        <span>{{ savingCard === 'ticket' ? '保存中...' : '保存车票' }}</span>
       </button>
     </div>
 
-    <div v-if="saveError" class="text-center text-sm text-[#d44f2f]">{{ saveError }}</div>
+    <p v-if="saveError" class="text-center text-sm text-ember">{{ saveError }}</p>
 
-    <div class="pt-8 text-center">
-      <button class="text-sm text-mist hover:text-paper" @click="handleRetest">
-        想重新探索？
+    <!-- Footer -->
+    <div class="flex flex-col items-center gap-4 pt-2">
+      <div class="flex w-full items-center gap-3">
+        <div class="h-px flex-1 bg-ash"></div>
+        <span class="text-xs text-gold/[0.38]">✦</span>
+        <div class="h-px flex-1 bg-ash"></div>
+      </div>
+      <button
+        class="flex items-center gap-2 border border-smoke px-6 py-2.5 text-[13px] text-silver transition hover:border-pearl/40"
+        @click="handleRetest"
+      >
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" /></svg>
+        <span>想重新探索？</span>
       </button>
+      <p class="text-[11px] text-fog">本测试仅供娱乐参考</p>
     </div>
   </div>
 </template>

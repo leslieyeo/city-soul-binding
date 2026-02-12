@@ -3,27 +3,27 @@ export const ELEMENT_ORDER = ['wood', 'fire', 'earth', 'metal', 'water'];
 export const ELEMENT_META = {
   wood: {
     cn: '木',
-    color: '#57B27D',
+    color: '#4A8B6E',
     trait: '生长'
   },
   fire: {
     cn: '火',
-    color: '#FF7345',
+    color: '#D4553A',
     trait: '热力'
   },
   earth: {
     cn: '土',
-    color: '#F5A524',
+    color: '#C9A962',
     trait: '承载'
   },
   metal: {
     cn: '金',
-    color: '#8CA0B8',
+    color: '#848484',
     trait: '秩序'
   },
   water: {
     cn: '水',
-    color: '#4F8CCF',
+    color: '#5B8FCE',
     trait: '流动'
   }
 };

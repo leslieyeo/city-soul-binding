@@ -1,58 +1,56 @@
 <script setup>
+import { computed } from 'vue';
+import { ELEMENT_META } from '../utils/elements';
+
 const props = defineProps({
-  city: {
-    type: Object,
-    required: true
-  },
-  hiddenCity: {
-    type: Object,
-    default: null
-  }
+  city: { type: Object, required: true },
+  hiddenCity: { type: Object, default: null },
+  primaryElement: { type: String, default: '' },
+  userName: { type: String, default: '' }
 });
+
+const primaryMeta = computed(() => ELEMENT_META[props.primaryElement] || ELEMENT_META.wood);
 </script>
 
 <template>
-  <article class="card-paper relative aspect-[3/4] overflow-hidden rounded-[30px] border border-[#c9c0ad] p-6 shadow-card sm:p-7">
-    <div class="absolute inset-x-0 top-0 h-20" :style="{ background: city.background, opacity: 0.42 }" />
-    <div class="absolute right-5 top-5 rounded-full border border-white/65 bg-white/65 px-3 py-1 text-xs text-[#2a3550]">
-      {{ city.tone }}
+  <article class="w-[350px] border border-smoke bg-charcoal p-5 space-y-5">
+    <!-- Header -->
+    <div class="space-y-1">
+      <p class="text-[10px] uppercase tracking-[3px] text-gold/[0.38] font-sans">CITY DEEP REPORT</p>
+      <h2 class="font-title text-2xl font-medium text-paper">城市深度报告</h2>
     </div>
 
-    <div class="relative flex h-full flex-col">
-      <header>
-        <p class="text-xs uppercase tracking-[0.24em] text-[#5f6982]">City Deep Report</p>
-        <h2 class="mt-2 font-title text-[30px] leading-tight text-[#1f2638]">{{ city.name }} 城市深度报告</h2>
-      </header>
+    <!-- Personality -->
+    <div class="space-y-2">
+      <p class="text-xs font-medium text-silver font-sans">城市人格</p>
+      <p class="text-sm leading-[1.7] text-paper font-sans">{{ city.personality }}</p>
+    </div>
 
-      <section class="mt-4 rounded-2xl border border-[#d2d8e2] bg-white/75 p-3.5">
-        <p class="text-xs uppercase tracking-[0.2em] text-[#5e6780]">城市人格</p>
-        <p class="mt-2 text-sm leading-relaxed text-[#2e3a54]">{{ city.personality }}</p>
-      </section>
+    <!-- City Codes -->
+    <div class="space-y-3">
+      <p class="text-xs font-medium text-silver font-sans">城市密码 × 3</p>
+      <div
+        v-for="(code, idx) in city.passwords"
+        :key="idx"
+        class="flex items-center gap-3"
+      >
+        <span class="font-mono text-xl font-medium text-gold/25">{{ String(idx + 1).padStart(2, '0') }}</span>
+        <span class="text-sm text-paper font-sans">{{ code }}</span>
+      </div>
+    </div>
 
-      <section class="mt-3 rounded-2xl border border-[#d2d8e2] bg-white/75 p-3.5">
-        <p class="text-xs uppercase tracking-[0.2em] text-[#5e6780]">城市密码 × 3</p>
-        <ul class="mt-2 space-y-1.5 text-sm text-[#2e3a54]">
-          <li v-for="item in city.passwords" :key="item" class="rounded-xl bg-[#eef2f8] px-3 py-1.5">{{ item }}</li>
-        </ul>
-      </section>
+    <div class="h-px w-full bg-smoke"></div>
 
-      <section class="mt-3 grid gap-2 sm:grid-cols-2">
-        <div class="rounded-2xl border border-[#d2d8e2] bg-white/75 p-3">
-          <p class="text-xs uppercase tracking-[0.2em] text-[#5e6780]">能量加成</p>
-          <p class="mt-2 text-sm text-[#2e3a54]">{{ city.boost }}</p>
-        </div>
-        <div class="rounded-2xl border border-[#d2d8e2] bg-white/75 p-3">
-          <p class="text-xs uppercase tracking-[0.2em] text-[#5e6780]">城市寄语</p>
-          <p class="mt-2 text-sm text-[#2e3a54]">{{ city.blessing }}</p>
-        </div>
-      </section>
+    <!-- Energy Boost -->
+    <div class="space-y-2">
+      <p class="text-xs font-medium text-silver font-sans">你在这座城市的能量加成</p>
+      <p class="text-[13px] leading-[1.6] text-paper font-sans">{{ city.boost }}</p>
+    </div>
 
-      <section v-if="hiddenCity" class="mt-3 rounded-2xl border border-dashed border-[#be8a6f] bg-[#fff3ea] p-3">
-        <p class="text-xs uppercase tracking-[0.2em] text-[#8a4a2f]">隐藏城市彩蛋</p>
-        <p class="mt-1 text-sm text-[#6c3925]">
-          你还有一座隐藏城市：{{ hiddenCity.city.name }}（分差 {{ hiddenCity.gap }}%）
-        </p>
-      </section>
+    <!-- Quote / Blessing -->
+    <div class="bg-void p-4 space-y-3">
+      <span class="font-title text-[28px] leading-none text-gold/25">「</span>
+      <p class="text-sm leading-[1.6] text-gold font-sans">{{ city.blessing }}</p>
     </div>
   </article>
 </template>
